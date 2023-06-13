@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 
 # http://localhost:8000/users/static/siddiquee
-
+PORT=8080
 app = FastAPI()
 
 @app.get("/users/static/{user_name}")
@@ -12,4 +12,4 @@ async def get_user_name(user_name: str):
 
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0")
+    uvicorn.run(app, host="0.0.0.0", port=PORT)
