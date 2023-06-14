@@ -1,9 +1,10 @@
-
+import os
 import uvicorn
 from fastapi import FastAPI
 
-# http://localhost:8000/users/static/siddiquee
-PORT=8080
+# http://localhost:8083/users/static/siddiquee
+PORT=int(os.environ.get('PORT'))
+
 app = FastAPI()
 
 @app.get("/users/static/{user_name}")

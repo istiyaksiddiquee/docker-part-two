@@ -1,6 +1,4 @@
-python -m venv workshop
-.\workshop\Scripts\activate.bat
-pip install -r requirements.txt
-cd codebase
-python main.py
-./workshop/Scripts/deactivate.bat
+docker build --build-arg PORT=8080 -t istiyaksiddiquee/docker-part-2:0.0.1 .
+docker run -p 8080:8080 istiyaksiddiquee/docker-part-2:0.0.1
+docker login
+docker push istiyaksiddiquee/docker-part-2:0.0.1
