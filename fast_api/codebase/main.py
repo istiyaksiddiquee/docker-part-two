@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get("/users/static/{user_name}")
 async def get_user_name(user_name: str):
-    return {"user_name": user_name}
+    return {"your user name is : ": user_name}
 
 
 if __name__ == "__main__":
