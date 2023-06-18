@@ -1,0 +1,60 @@
+version: '3.9'
+
+services:
+  backend:
+    container_name: ${FAST_API_CONTAINER_NAME}
+    image: ${IMAGE_TAG}:${IMAGE_VERSION}
+    build:
+      context: ./fast_api
+      dockerfile: Dockerfile
+      args:
+        PORT: ${BACKEND_PORT}
+    command: uvicorn main:app --host 0.0.0.0 --port ${BACKEND_PORT} --reload
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    environment:
+      - DB_HOST=mysql_db
+      - DB_PORT=${MYSQL_PORT}
+      - DB_USER_NAME=${DB_USER}
+      - DB_PASSWORD=${DB_PWD}
+      - DB_NAME=${DB_DATABASE}
+    volumes:
+      - ./fast_api/codebase:/usr/src/app
+    networks:
+      - api
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    container_name: ${MYSQL_CONTAINER_NAME}
+    image: ${DB_IMAGE}:${DB_IMG_VERSION}
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PWD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PWD}
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    volumes:
+      - ./mysql/initdb.d:/docker-entrypoint-initdb.d
+      - mysql-data:/var/lib/mysql
+    networks:
+      - api
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-ppass"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+networks:
+  api:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: E:\\mysql
